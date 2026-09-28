@@ -1,79 +1,45 @@
 name: 障害起票
 description: テストで検知した障害を起票します
 title: "[障害] "
-labels: ["障害", "起票"]
+labels: ["障害", "status:起票"]
 body:
   - type: markdown
     attributes:
       value: |
         ## 障害起票フォーム
-        「検知時」の項目は起票者が入力してください。「修正時」以降の項目は、修正者・テスト実施者が Issue 本文を編集して記載します。
-        **ステータス・担当・完了日**は Assignees / ラベル / Projects / Issue のクローズ日時で管理します。
+        起票後、**右サイドバー**で以下を設定してください（フォームでは入力しません）。
 
-  # ---------------- 検知時（検知者） ----------------
+        | サイドバー | 設定内容 |
+        | --- | --- |
+        | Labels | `test:` テスト分類 / `report:` 起票チーム / `team:` 担当チーム(複数可) / `ideal:` 理想検出工程 / `plan:` 企画確認 |
+        | Milestone | テスト工程・サイクル（例: 結合テスト 1周目） |
+        | Assignees | ネクストアクションの担当者 |
+        | Projects | 管理ボード（Status / 優先度 / 完了日などを Projects フィールドで管理する場合） |
+
+        **修正者・PM/PLが後から付けるラベル**: `priority:` 優先度 / `status:` ステータス / `class:` 障害分類 / `cause:` 原因区分 / `cause-phase:` 原因工程 / `reflect:` 他成果物への反映 / `retest:` 再テスト結果
+
   - type: markdown
     attributes:
       value: "## 【検知時】検知者が記載"
-
-  - type: dropdown
-    id: test_category
-    attributes:
-      label: テスト分類
-      options:
-        - 機能テスト
-        - 単性能テスト
-    validations:
-      required: true
-
-  - type: dropdown
-    id: reporter_team
-    attributes:
-      label: 起票チーム
-      options:
-        - フロント
-        - バック
-    validations:
-      required: true
-
-  - type: dropdown
-    id: assigned_team
-    attributes:
-      label: 担当チーム
-      description: 複数選択できます
-      multiple: true
-      options:
-        - フロント
-        - バック
-        - データレイク
-        - インフラ・運用
-        - 管理
-        - 企画
-    validations:
-      required: true
-
-  - type: input
-    id: occurred_date
-    attributes:
-      label: 発生日
-      placeholder: "2027-01-01"
-    validations:
-      required: true
-
   - type: input
     id: feature_name
     attributes:
       label: 機能名
     validations:
       required: true
-
+  - type: input
+    id: occurred_date
+    attributes:
+      label: 発生日
+      placeholder: "2025-01-01"
+    validations:
+      required: true
   - type: textarea
     id: description
     attributes:
       label: 障害内容
-      description: 障害の内容
     validations:
       required: true
-
   - type: textarea
     id: reproduce
     attributes:
@@ -85,210 +51,78 @@ body:
         3. ...
     validations:
       required: true
-
   - type: textarea
     id: expected
     attributes:
       label: 期待値
-      description: テストの期待値
     validations:
       required: true
-
   - type: input
     id: test_device
     attributes:
       label: テスト機種
       description: テスト実施端末（端末依存の可能性がある場合のみ）
-
-  - type: dropdown
-    id: ideal_detection_phase
-    attributes:
-      label: 理想検出工程
-      options:
-        - 業務要件定義
-        - システム要件定義
-        - 基本設計
-        - 詳細設計
-        - 製造
-        - 単体テスト
-        - 結合テスト
-    validations:
-      required: true
-
-  - type: dropdown
-    id: planning_check
-    attributes:
-      label: 企画確認
-      options:
-        - 確認不要
-        - 企画確認前
-        - 企画確認中
-        - 企画確認完了
-      default: 0
-    validations:
-      required: true
-
   - type: textarea
     id: note
     attributes:
       label: 補足
-      description: 補足事項がある場合に記載
 
-  # ---------------- PM/PL ----------------
   - type: markdown
     attributes:
-      value: "## 【随時】PM/PLが記載"
-
-  - type: dropdown
-    id: priority
-    attributes:
-      label: 優先度
-      description: PM/PLが状況に応じて選択（起票時は未選択でOK）
-      options:
-        - 高
-        - 低
-
-  # ---------------- 修正時（修正者） ----------------
-  - type: markdown
-    attributes:
-      value: |
-        ## 【修正時】修正者が記載
-        起票時は空欄でOKです。修正後に Issue 本文を編集して記載してください。
-
-  - type: dropdown
-    id: defect_category
-    attributes:
-      label: 障害分類
-      options:
-        - 障害
-        - 許容動作
-        - オペレーションミス
-        - データ不備
-        - 改善
-        - テスト仕様書不備
-        - 重複
-
+      value: "## 【修正時】修正者が記載（起票時は空欄でOK。後から本文を編集）"
   - type: textarea
     id: investigation
     attributes:
       label: 調査結果
-
   - type: textarea
     id: fix_location
     attributes:
       label: 修正箇所
-
   - type: textarea
     id: fix_content
     attributes:
       label: 修正内容
-
   - type: input
     id: fixer
     attributes:
       label: 修正者
-
   - type: input
     id: fixed_date
     attributes:
       label: 修正日
-      placeholder: "2027-01-01"
-
+      placeholder: "2025-01-01"
   - type: textarea
     id: horizontal_investigation
     attributes:
       label: 横展開調査結果
       description: 調査要否、調査内容、調査結果を記載
-
   - type: input
     id: occurred_case
     attributes:
       label: 発生ケース
       description: ケース番号を記載
-
-  - type: dropdown
-    id: reflect_status
-    attributes:
-      label: 他成果物への反映
-      options:
-        - 未反映
-        - 反映済み
-        - 反映不要
-
   - type: textarea
     id: reflect_result
     attributes:
       label: 反映結果
-
   - type: textarea
     id: doc_fix
     attributes:
       label: ドキュメント修正
       description: 修正要否、対象のドキュメント名を記載
 
-  # ---------------- 原因分析（修正者/不良埋め込み者） ----------------
   - type: markdown
     attributes:
-      value: |
-        ## 【修正時】原因分析（修正者／不良埋め込み者）
-        修正者が記載できない場合は、不良を埋め込んだ人に記載を依頼してください。
-
+      value: "## 【修正時】原因分析（修正者／不良埋め込み者）\n修正者が書けない場合は、不良を埋め込んだ人に依頼してください。"
   - type: textarea
     id: direct_cause
     attributes:
       label: 直接原因
-
-  - type: dropdown
-    id: cause_category
-    attributes:
-      label: 原因区分
-      description: |
-        認識誤り＝チーム間（フロント・バック）での仕様のすり合わせ不足・読み取り誤り
-        考慮不足＝実装時にデータパターン等の考慮が不足していた
-        知識不足＝意図した仕様に対して、適切な実装を選択できていなかった
-        単純バグ＝上記などの原因によらない実装ミス
-        仕様不備＝設計自体が不適切であった
-        先行成果物不備＝設計書にミスがあった（設計意図と異なる記載、更新漏れなど）
-        データ不備＝テストデータ不備のため想定外の挙動となった（障害ではない）
-      options:
-        - 認識誤り
-        - 考慮不足
-        - 知識不足
-        - 単純バグ
-        - 仕様不備
-        - 先行成果物不備
-        - データ不備（障害ではない）
-
   - type: textarea
     id: root_cause
     attributes:
       label: 根本原因
-
   - type: textarea
     id: countermeasure
     attributes:
       label: 根本原因への対策
-
-  - type: dropdown
-    id: cause_phase
-    attributes:
-      label: 原因工程
-      options:
-        - 業務要件定義
-        - システム要件定義
-        - 基本設計
-        - 詳細設計
-        - 製造
-
-  # ---------------- 再テスト ----------------
-  - type: markdown
-    attributes:
-      value: "## 【再テスト実施時】テスト実施者が記載"
-
-  - type: dropdown
-    id: retest_result
-    attributes:
-      label: 再テスト結果
-      options:
-        - OK
-        - NG
